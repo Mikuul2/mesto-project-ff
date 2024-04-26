@@ -1,4 +1,4 @@
-import {displayingCards} from './scripts/cards.js';
+import {handleDeleteCard, createCard} from './scripts/cards.js';
 import {openPopup, closePopup} from './scripts/modal.js'
 import {changeEditForm, handleFormSubmit, addNewCard} from './scripts/form.js'
 import './pages/index.css';
@@ -15,9 +15,11 @@ const editButton = document.querySelector('.profile__edit-button');
 const editCloseButton = document.querySelector('.popup_type_edit .popup__close');
 const addPopup = document.querySelector('.popup_type_new-card');
 const addButton = document.querySelector('.profile__add-button');
-const addCloseButton = document.querySelector('.popup_type_new-card .popup__close');
-const imgPopup = document.querySelector('.popup_type_image');
-const imgCloseButton = document.querySelector('.popup__content_content_image .popup__close');
+const closeButtons = document.querySelectorAll('.popup__close');
+
+const profileName = document.querySelector('.profile__title');
+const profileDescription = document.querySelector('.profile__description');
+
 
 const profileForm = document.forms['edit-profile'];
 const newCardForm = document.forms['new-place'];
@@ -50,6 +52,20 @@ const initialCards = [
 ];
 
 // вывод карточек
+
+//вставка карточки в список карточек
+function renderCard(createCard){
+  const cardsList = document.querySelector('.places__list');
+  cardsList.append(createCard)
+}
+
+//вывод массива карточек
+function displayingCards (arr) {
+  arr.forEach((elements) => { 
+    renderCard(createCard(elements, handleDeleteCard))
+  });
+}
+
 displayingCards(initialCards);
 
 // открытие попапа редактирования профиля
@@ -57,11 +73,10 @@ editButton.addEventListener('click', function () {
   openPopup(editPopup);
 });
 
-// закрытие попапа редактирования профиля
+// очищение попапа редактирования профиля при нажатии на крестик
 editCloseButton.addEventListener('click', function () {
-  closePopup(editPopup);
-  profileForm.elements.name.value = document.querySelector('.profile__title').textContent;
-  profileForm.elements.description.value = document.querySelector('.profile__description').textContent;
+  profileForm.elements.name.value = profileName.textContent;
+  profileForm.elements.description.value = profileDescription.textContent;
 });
 
 // открытие попапа добавления карточки
@@ -69,14 +84,12 @@ addButton.addEventListener('click', function () {
   openPopup(addPopup);
 });
 
-// закрытие попапа добавления карточки
-addCloseButton.addEventListener('click', function () {
-  closePopup(addPopup);
-});
-
-// закрытие попапа картинки в карточке
-imgCloseButton.addEventListener('click', function () {
-  closePopup(imgPopup);
+// великолепная функция закрытия любого попапа
+closeButtons.forEach((button) => {
+  const popup = button.closest('.popup');
+  button.addEventListener('click', function () {
+    closePopup(popup);
+  });
 });
 
 // редактирование и отправка форм

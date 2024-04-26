@@ -1,13 +1,18 @@
-import {closePopup} from './modal'
-import {displayingCards} from './cards'
+import {closePopup} from './modal.js'
+import {handleDeleteCard, createCard} from './cards.js';
 
+const profileName = document.querySelector('.profile__title');
+const profileDescription = document.querySelector('.profile__description');
+const editPopup = document.querySelector('.popup_type_edit');
+const cardsList = document.querySelector('.places__list');
+const addPopup = document.querySelector('.popup_type_new-card');
 
 // смена данных в форме изменения профиля в соответствии с актуальными данными
 function changeEditForm (form) {
 	const nameInput = form.elements.name;
 	const descriptionInput = form.elements.description;
-	nameInput.value = document.querySelector('.profile__title').textContent;
-	descriptionInput.value = document.querySelector('.profile__description').textContent;
+	nameInput.value = profileName.textContent;
+	descriptionInput.value = profileDescription.textContent;
 }
 
 // смена данных и отправка формы изменения профиля
@@ -17,10 +22,23 @@ function handleFormSubmit(evt) {
 	const nameInput = document.forms['edit-profile'].elements.name;
 	const descriptionInput = document.forms['edit-profile'].elements.description;
 
-	document.querySelector('.profile__title').textContent = nameInput.value;
-	document.querySelector('.profile__description').textContent = descriptionInput .value
+	profileName.textContent = nameInput.value;
+	profileDescription.textContent = descriptionInput .value
 
-	closePopup(document.querySelector('.popup_type_edit'))
+	closePopup(editPopup)
+}
+
+//вставка карточки в список карточек
+function renderCard(createCard){
+  const cardsList = document.querySelector('.places__list');
+  cardsList.append(createCard)
+}
+
+//вывод массива карточек
+function displayingCards (arr) {
+  arr.forEach((elements) => { 
+    renderCard(createCard(elements, handleDeleteCard))
+  });
 }
 
 // добавление новой карточки
@@ -30,8 +48,6 @@ function addNewCard(evt) {
 	const newCardForm = document.forms['new-place'];
 	const cardName = newCardForm.elements['place-name'].value;
 	const cardSrc = newCardForm.elements.link.value;
-	const cardsList = document.querySelector('.places__list');
-	const addPopup = document.querySelector('.popup_type_new-card');
 
 	const newCardArr = [
 		{
