@@ -17,6 +17,10 @@ const addPopup = document.querySelector('.popup_type_new-card');
 const addButton = document.querySelector('.profile__add-button');
 const closeButtons = document.querySelectorAll('.popup__close');
 
+const imgPopup = document.querySelector('.popup_type_image');
+const popupCardImg = document.querySelector('.popup__image');
+const popupImgText = document.querySelector('.popup__caption');
+
 const profileName = document.querySelector('.profile__title');
 const profileDescription = document.querySelector('.profile__description');
 
@@ -62,10 +66,11 @@ function renderCard(createCard){
 //вывод массива карточек
 function displayingCards (arr) {
   arr.forEach((elements) => { 
-    renderCard(createCard(elements, handleDeleteCard))
+    renderCard(createCard(elements, handleDeleteCard, openImgPopup))
   });
 }
 
+//вывод массива карточек
 displayingCards(initialCards);
 
 // открытие попапа редактирования профиля
@@ -83,6 +88,14 @@ editCloseButton.addEventListener('click', function () {
 addButton.addEventListener('click', function () {
   openPopup(addPopup);
 });
+
+// открытие попапа карточки
+function openImgPopup (data) {
+  openPopup(imgPopup);
+  popupCardImg.src = data.link;
+  popupCardImg.alt = data.name;
+  popupImgText.textContent = data.name;
+};
 
 // великолепная функция закрытия любого попапа
 closeButtons.forEach((button) => {

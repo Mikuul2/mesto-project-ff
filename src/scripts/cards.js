@@ -1,14 +1,5 @@
-import {openPopup} from './modal.js'
-
-// По заданию для обработки лайка, удаления и клика по картинке нужно сделать отдельные функции 
-// и передавать их в вызов функции создания карточки
-
-const imgPopup = document.querySelector('.popup_type_image');
-const popupCardImg = document.querySelector('.popup__image');
-const popupImgText = document.querySelector('.popup__caption');
-
 // создание карточки
-function createCard(data, onDelete){
+function createCard(data, onDelete, openImg){
   const cardTemplate = document.querySelector('#card-template').content;
   const cardElement = cardTemplate.querySelector('.places__item').cloneNode(true);
   const likeButton = cardElement.querySelector('.card__like-button');
@@ -22,7 +13,7 @@ function createCard(data, onDelete){
   });
 
   cardElement.querySelector('.card__image').addEventListener('click', function () {
-    openImgPopup (data);
+    openImg (data);
   });
 
   likeButton.addEventListener('click', function () {
@@ -30,14 +21,6 @@ function createCard(data, onDelete){
   });
 
   return cardElement;
-};
-
-// открытие попапа карточки
-function openImgPopup (data) {
-  openPopup(imgPopup);
-  popupCardImg.src = data.link;
-  popupCardImg.alt = data.name;
-  popupImgText.textContent = data.name;
 };
 
 // удаление карточки
