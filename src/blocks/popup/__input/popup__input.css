@@ -10,6 +10,17 @@
   margin-bottom: 10px;
 }
 
+.popup__input_type_error {
+  border-bottom: 1px solid rgba(255, 0, 0, 1);
+}
+
+.popup__error_visible {
+  font-size: 12px;
+  line-height: 14.5px;
+  opacity: 1;
+  color: rgba(255, 0, 0, 1);
+}
+
 .popup__input:last-of-type {
   margin-bottom: 0;
 }
