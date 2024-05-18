@@ -47,13 +47,13 @@ function handleDeleteCard(element, elementId) {
 };
 
 // лайк карточки
-function likeCard (likeButton, elementId) {
+function likeCard (likeButton, id) {
   if (likeButton.classList.contains('card__like-button_is-active')) {
     likeButton.classList.remove('card__like-button_is-active');
-    deleteCardsLike(elementId);
+    deleteCardsLike(id);
   } else {
     likeButton.classList.add('card__like-button_is-active');
-    putCardsLike(elementId);
+    putCardsLike(id);
   }
 };
 

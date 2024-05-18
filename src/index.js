@@ -5,14 +5,6 @@ import {changeEditForm, handleFormSubmit, addNewCard, addNewAvatar} from './scri
 import {getProfileData, getInitialCards} from './scripts/api.js';
 import './pages/index.css';
 
-// данные картинок по умолчанию
-const  arhizImage = new URL('https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg', import.meta.url);
-const  chelyabinskImage = new URL('https://pictures.s3.yandex.net/frontend-developer/cards-compressed/chelyabinsk-oblast.jpg', import.meta.url);
-const  ivanovoImage = new URL('https://pictures.s3.yandex.net/frontend-developer/cards-compressed/ivanovo.jpg', import.meta.url);
-const  kamchatkaImage = new URL('https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kamchatka.jpg', import.meta.url);
-const  holmogorImage = new URL('https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kholmogorsky-rayon.jpg', import.meta.url);
-const  baikalImage = new URL('https://pictures.s3.yandex.net/frontend-developer/cards-compressed/baikal.jpg', import.meta.url);
-
 // переменные попапа профиля
 const editPopup = document.querySelector('.popup_type_edit');
 const editCloseButton = document.querySelector('.popup_type_edit .popup__close');
@@ -43,34 +35,6 @@ const popupAvatar = document.querySelector('.popup_type_new-avatar');
 const profileForm = document.forms['edit-profile'];
 const newCardForm = document.forms['new-place'];
 const avatarForm = document.forms['new-avatar'];
-
-// данные карточек по умолчанию
-const initialCards = [
-  {
-    name: "Архыз",
-    link: arhizImage,
-  },
-  {
-    name: "Челябинская область",
-    link: chelyabinskImage,
-  },
-  {
-    name: "Иваново",
-    link: ivanovoImage,
-  },
-  {
-    name: "Камчатка",
-    link: kamchatkaImage,
-  },
-  {
-    name: "Холмогорский район",
-    link: holmogorImage,
-  },
-  {
-    name: "Байкал",
-    link: baikalImage,
-  }
-];
 
 // конфигурация классов для валидации форм
 const validationConfig = {
@@ -173,9 +137,7 @@ getProfileData()
 getInitialCards()
   .then((result) => {
     displayingCards(result);
-    console.log(result);
   })
   .catch((err) => {
-    displayingCards(initialCards);
     console.log(err);
   });

@@ -8,7 +8,7 @@ const config = {
 }
 
 // запрос на получение данных карточек
-const getInitialCards = () => {
+function getInitialCards () {
   return fetch(`${config.baseUrl}/cards`, {
     headers: config.headers
   })
@@ -21,7 +21,7 @@ const getInitialCards = () => {
 } 
 
 // запрос на получение данных профиля
-const getProfileData = () => {
+function getProfileData () {
   return fetch(`${config.baseUrl}/users/me`, {
     headers: config.headers
 })
@@ -42,13 +42,7 @@ function patchProfileData (name, description) {
       name: `${name}`,
       about: `${description}`
     })
-  })
-    .then(res => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Ошибка: ${res.status}`);
-    });
+  });
 }
 
 //  запрос на отправку данных новой карточки
@@ -60,13 +54,7 @@ function postNewCard (cardName, cardLink) {
       name: `${cardName}`,
       link: `${cardLink}`
     })
-  })
-    .then(res => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Ошибка: ${res.status}`);
-    });
+  });
 }
 
 // запрос на удаление новой карточки
@@ -119,13 +107,7 @@ function patchProfileAvatar (avatarImg) {
     body: JSON.stringify({
       avatar: `${avatarImg}`,
     })
-  })
-    .then(res => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Ошибка: ${res.status}`);
-    });
+  });
 }
 
 export {getProfileData, getInitialCards, patchProfileData, postNewCard, deleteNewCard, putCardsLike, deleteCardsLike, patchProfileAvatar};

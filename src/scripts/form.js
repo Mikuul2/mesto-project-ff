@@ -6,6 +6,10 @@ import {patchProfileData, postNewCard, patchProfileAvatar} from './api.js'
 // id пользователя
 const userId = '84784d7812ca7cdb7bad727f';
 
+// текст для UX
+const isLoadingText = 'Сохранение...';
+const normalText = 'Сохранить';
+
 // переменные профиля
 const profileName = document.querySelector('.profile__title');
 const profileDescription = document.querySelector('.profile__description');
@@ -36,6 +40,17 @@ const validationConfig = {
   errorClass: 'popup__error_visible'
 }
 
+// Улучшенный UX
+function renderLoading (isLoading, form) {
+  const buttonElement = form.querySelector(`${validationConfig.submitButtonSelector}`);
+  if (isLoading) {
+    buttonElement.textContent = isLoadingText;
+  } else {
+			buttonElement.textContent = normalText;
+  }
+
+}
+
 // смена данных в форме изменения профиля в соответствии с актуальными данными
 function changeEditForm (form) {
 	const nameInput = form.elements.name;
@@ -48,13 +63,28 @@ function changeEditForm (form) {
 function handleFormSubmit(evt) {
 	evt.preventDefault();
 
-	const nameInput = document.forms['edit-profile'].elements.name.value;
-	const descriptionInput = document.forms['edit-profile'].elements.description.value;
+	const editForm = document.forms['edit-profile'];
+	const nameInput = editForm.elements.name.value;
+	const descriptionInput = editForm.elements.description.value;
 
 	profileName.textContent = nameInput;
 	profileDescription.textContent = descriptionInput;
 
-	patchProfileData(nameInput, descriptionInput);
+	renderLoading(true, editForm);
+	patchProfileData(nameInput, descriptionInput)
+		.then((res) => {
+			if (res.ok) {
+				return res.json();
+			}
+			return Promise.reject(res.status);
+		})
+		.catch((err) => {
+			console.log(`Ошибка: ${err}`)
+		})
+		.finally(() => {
+			renderLoading(false, editForm);
+		});
+
 
 	closePopup(editPopup)
 }
@@ -88,7 +118,21 @@ function addNewAvatar (evt) {
 
 	avatarElement.style.backgroundImage = `url('${avatarUrl}')`;
 
-	patchProfileAvatar(avatarUrl);
+	renderLoading(true, avatarForm);
+	patchProfileAvatar(avatarUrl)
+		.then((res) => {
+			if (res.ok) {
+				return res.json();
+			}
+			return Promise.reject(res.status);
+		})
+		.catch((err) => {
+			console.log(`Ошибка: ${err}`)
+		})
+		.finally(() => {
+			renderLoading(false, avatarForm);
+		});
+
 	closePopup(popupAvatar);
 	avatarForm.reset();
 	buttonElement.classList.add(`${validationConfig.inactiveButtonClass}`);
@@ -102,26 +146,30 @@ function addNewCard(evt) {
 	const cardName = newCardForm.elements['place-name'].value;
 	const cardUrl = newCardForm.elements.link.value;
 	const buttonElement = newCardForm.querySelector(`${validationConfig.submitButtonSelector}`);
-	const likesArr = [];
+	const newCard = [];
 
-	const newCardArr = [
-		{
-			name: cardName,
-			link: cardUrl,
-			likes: likesArr,
-			owner: {
-				_id: userId
+	// отправляем данные на сервер, получаем новые данные и выводим карточку на страницу
+	renderLoading(true, newCardForm);
+	postNewCard(cardName, cardUrl)
+		.then((res) => {
+			if (res.ok) {
+				return res.json(); // должен вернуть массив, который надо подставить в функцию отображения карточки
 			}
-		}
-	];
+			return Promise.reject(res.status);
+		})
+		.then((data) => {
+			newCard.push(data);
+      displayingCards(newCard);
+			cardsList.prepend(cardsList.lastChild);
+  	})
+		.catch((err) => {
+			console.log(`Ошибка: ${err}`)
+		})
+		.finally(() => {
+			renderLoading(false, newCardForm);
+		});
 
-	// вывод карточки
-	displayingCards(newCardArr);
-
-	// вставляем карточку в начало
-	cardsList.prepend(cardsList.lastChild);
-
-	// закрываем попап добавления карточки
+	// закрываем попап 
 	closePopup(addPopup);
 
 	// очищаем форму добавления карточки
@@ -132,9 +180,6 @@ function addNewCard(evt) {
 
 	// блокируем кнопку отправки карточки
 	buttonElement.classList.add(`${validationConfig.inactiveButtonClass}`);
-
-	// отправляем карточку на сервер
-	postNewCard(cardName, cardUrl);
 }
 
 export {changeEditForm, handleFormSubmit, addNewCard, addNewAvatar};
