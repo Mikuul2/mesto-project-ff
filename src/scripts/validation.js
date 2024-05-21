@@ -46,9 +46,6 @@ function setEventListeners (formElement, validationConfig) {
 function enableValidation (validationConfig) {
   const formList = Array.from(document.querySelectorAll(`${validationConfig.formSelector}`));
   formList.forEach((formElement) => {
-    formElement.addEventListener('submit', function (evt) {
-      evt.preventDefault();
-    });
     setEventListeners(formElement, validationConfig);
   });
 };
@@ -71,13 +68,24 @@ function toggleButtonState (inputList, buttonElement, validationConfig) {
 
 // очищение ошибок валидации
 function clearValidation (formElement, validationConfig) {
-  if (formElement.querySelector(`${validationConfig.inputSelector}`).classList.contains(`${validationConfig.inputErrorClass}`)) {
-    const inputElement = formElement.querySelector(`.${validationConfig.inputErrorClass}`);
-    const errorElement = formElement.querySelector(`.${validationConfig.errorClass}`);
-    inputElement.classList.remove(`${validationConfig.inputErrorClass}`);
-    errorElement.textContent = '';
-    errorElement.classList.remove(`${validationConfig.errorClass}`);
-  }
+  const inputList = formElement.querySelectorAll(`${validationConfig.inputSelector}`);
+  const errorList = formElement.querySelectorAll(`.${validationConfig.errorClass}`);
+  inputList.forEach((input) => {
+    if (input.classList.contains(`${validationConfig.inputErrorClass}`)) {
+      input.classList.remove(`${validationConfig.inputErrorClass}`);
+      errorList.forEach((error) => {
+        error.textContent = '';
+        error.classList.remove(`${validationConfig.errorClass}`);
+      })
+    }
+  })
+  // if (formElement.querySelector(`${validationConfig.inputSelector}`).classList.contains(`${validationConfig.inputErrorClass}`)) {
+  //   const inputElement = formElement.querySelector(`.${validationConfig.inputErrorClass}`);
+  //   const errorElement = formElement.querySelector(`.${validationConfig.errorClass}`);
+  //   inputElement.classList.remove(`${validationConfig.inputErrorClass}`);
+  //   errorElement.textContent = '';
+  //   errorElement.classList.remove(`${validationConfig.errorClass}`);
+  // }
 }
 
 export {enableValidation, clearValidation}

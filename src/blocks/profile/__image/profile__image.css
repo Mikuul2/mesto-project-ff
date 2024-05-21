@@ -24,6 +24,7 @@
 	right: 0;
 	bottom: 0;
 	background-color:rgba(0, 0, 0, .5);
+  cursor: pointer;
 }
 .profile__image:hover .profile__image-decor-element{
   opacity: 1;
@@ -35,6 +36,7 @@
   width: 26px;
   height: 26px;
   opacity: 0;
+  cursor: pointer;
 }
 
 @media screen and (max-width: 740px) {

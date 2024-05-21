@@ -7,29 +7,31 @@ const config = {
   }
 }
 
+// проверка ответа сервера и преобразование из json
+function getResponseData(res) {
+  if (!res.ok) {
+    return Promise.reject(`Ошибка: ${res.status}`); 
+  } 
+  return res.json();
+} 
+
 // запрос на получение данных карточек
 function getInitialCards () {
   return fetch(`${config.baseUrl}/cards`, {
     headers: config.headers
   })
     .then(res => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Ошибка: ${res.status}`);
+      return getResponseData(res);
     });
 } 
 
 // запрос на получение данных профиля
-function getProfileData () {
+function getUserInfo () {
   return fetch(`${config.baseUrl}/users/me`, {
     headers: config.headers
-})
+  })
     .then(res => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Ошибка: ${res.status}`);
+      return getResponseData(res);
     });
 }
 
@@ -64,10 +66,7 @@ function deleteNewCard (id) {
     headers: config.headers
   })
     .then(res => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Ошибка: ${res.status}`);
+      return getResponseData(res);
     });
 }
 
@@ -78,12 +77,9 @@ function putCardsLike (id) {
     headers: config.headers
   })
     .then(res => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Ошибка: ${res.status}`);
+      return getResponseData(res);
     });
-}
+  }
 
 // запрос на удаление нового лайка
 function deleteCardsLike (id) {
@@ -92,10 +88,7 @@ function deleteCardsLike (id) {
     headers: config.headers
   })
     .then(res => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Ошибка: ${res.status}`);
+      return getResponseData(res);
     });
 }
 
@@ -110,4 +103,4 @@ function patchProfileAvatar (avatarImg) {
   });
 }
 
-export {getProfileData, getInitialCards, patchProfileData, postNewCard, deleteNewCard, putCardsLike, deleteCardsLike, patchProfileAvatar};
+export {getUserInfo, getInitialCards, patchProfileData, postNewCard, deleteNewCard, putCardsLike, deleteCardsLike, patchProfileAvatar, getResponseData};

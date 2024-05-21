@@ -19,6 +19,10 @@ function createCard(data, onDelete, openImgPopup, userId) {
   if (data.owner._id === userId) {
     deleteButton.classList.remove('visually-hidden');
   }
+  
+  if (data.likes.find(like => like._id === userId)) {
+    likeButton.classList.add('card__like-button_is-active');
+  }
 
   deleteButton.addEventListener('click', function () {
     onDelete (cardElement, data._id);
@@ -29,12 +33,7 @@ function createCard(data, onDelete, openImgPopup, userId) {
   });
 
   likeButton.addEventListener('click', function () {
-    likeCard (likeButton, data._id);
-    if (likeButton.classList.contains('card__like-button_is-active')) {
-      likeCounter.textContent = Number(likeCounter.textContent) + 1;
-    } else {
-      likeCounter.textContent = Number(likeCounter.textContent) - 1;
-    }
+    likeCard (likeButton, data._id, likeCounter);
   });
 
   return cardElement;
@@ -42,18 +41,35 @@ function createCard(data, onDelete, openImgPopup, userId) {
 
 // удаление карточки
 function handleDeleteCard(element, elementId) {
-  element.remove();
-  deleteNewCard(elementId);
+  deleteNewCard(elementId)
+  .then(() => {
+    element.remove();
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 };
 
 // лайк карточки
-function likeCard (likeButton, id) {
+function likeCard (likeButton, id, likeCounter) {
   if (likeButton.classList.contains('card__like-button_is-active')) {
-    likeButton.classList.remove('card__like-button_is-active');
-    deleteCardsLike(id);
+    deleteCardsLike(id)
+      .then(() => {
+        likeButton.classList.remove('card__like-button_is-active');
+        likeCounter.textContent = Number(likeCounter.textContent) - 1;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   } else {
-    likeButton.classList.add('card__like-button_is-active');
-    putCardsLike(id);
+    putCardsLike(id)
+      .then(() => {
+        likeButton.classList.add('card__like-button_is-active');
+        likeCounter.textContent = Number(likeCounter.textContent) + 1;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 };
 
