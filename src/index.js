@@ -1,7 +1,7 @@
 import {handleDeleteCard, createCard} from './scripts/cards.js';
 import {openPopup, closePopup} from './scripts/modal.js';
 import {enableValidation, clearValidation} from './scripts/validation.js'
-import {getUserInfo, getInitialCards, patchProfileData, postNewCard, patchProfileAvatar, getResponseData} from './scripts/api.js';
+import {getUserInfo, getInitialCards, patchProfileData, postNewCard, patchProfileAvatar} from './scripts/api.js';
 import './pages/index.css';
 
 // текст для UX
@@ -72,8 +72,6 @@ function changeEditForm (form) {
 // закрытие, открытие и очищение попапов
 // открытие попапа редактирования профиля
 editButton.addEventListener('click', function () {
-  profileForm.elements.name.value = profileName.textContent;
-  profileForm.elements.description.value = profileDescription.textContent;
   changeEditForm(profileForm);
   clearValidation(profileForm, validationConfig);
   openPopup(editPopup);
@@ -116,11 +114,10 @@ function handleFormSubmit(evt) {
 
 	renderLoading(true, editForm);
 	patchProfileData(nameInput, descriptionInput)
-		.then((res) => {
-			profileName.textContent = nameInput;
-			profileDescription.textContent = descriptionInput;
+		.then((data) => {
+			profileName.textContent = data.name;
+			profileDescription.textContent = data.about;
 			closePopup(editPopup);
-			return getResponseData(res);
 		})
 		.catch((err) => {
 			console.log(`Ошибка: ${err}`)
@@ -139,12 +136,11 @@ function addNewAvatar (evt) {
 
 	renderLoading(true, avatarForm);
 	patchProfileAvatar(avatarUrl)
-		.then((res) => {
-			avatarElement.style.backgroundImage = `url('${avatarUrl}')`;
+		.then((data) => {
+			avatarElement.style.backgroundImage = `url('${data.avatar}')`;
 			closePopup(popupAvatar);
 			avatarForm.reset();
 			buttonElement.classList.add(`${validationConfig.inactiveButtonClass}`);
-			return getResponseData(res);
 		})
 		.catch((err) => {
 			console.log(`Ошибка: ${err}`)
@@ -165,9 +161,6 @@ function addNewCard(evt) {
 	
 	renderLoading(true, newCardForm);
 	postNewCard(cardName, cardUrl)
-		.then((res) => {
-			return getResponseData(res);
-		})
 		.then((data) => {
 			cardsList.prepend(createCard(data, handleDeleteCard, openImgPopup, data.owner._id));
 			closePopup(addPopup);

@@ -44,7 +44,10 @@ function patchProfileData (name, description) {
       name: `${name}`,
       about: `${description}`
     })
-  });
+  })
+  .then((res) => {
+    return getResponseData(res);
+  })
 }
 
 //  запрос на отправку данных новой карточки
@@ -56,7 +59,10 @@ function postNewCard (cardName, cardLink) {
       name: `${cardName}`,
       link: `${cardLink}`
     })
-  });
+  })
+  .then((res) => {
+    return getResponseData(res);
+  })
 }
 
 // запрос на удаление новой карточки
@@ -87,9 +93,9 @@ function deleteCardsLike (id) {
     method: 'DELETE',
     headers: config.headers
   })
-    .then(res => {
-      return getResponseData(res);
-    });
+  .then(res => {
+    return getResponseData(res);
+  }); 
 }
 
 // запрос обновление аватара пользователя
@@ -98,9 +104,12 @@ function patchProfileAvatar (avatarImg) {
     method: 'PATCH',
     headers: config.headers,
     body: JSON.stringify({
-      avatar: `${avatarImg}`,
+      avatar: `${avatarImg}`
     })
-  });
+  })
+  .then((res) => {
+    return getResponseData(res);
+  })
 }
 
 export {getUserInfo, getInitialCards, patchProfileData, postNewCard, deleteNewCard, putCardsLike, deleteCardsLike, patchProfileAvatar, getResponseData};
